@@ -14,10 +14,12 @@ dependencies = [
     "sentence-transformers",
     "streamlit",
     "python-dotenv",
-    "pytest",
     "groq>=0.31.1",
     "pydantic-settings>=2.10.1",
     "python-multipart>=0.0.20",
+    # Testing tools
+    "pytest",
+    "pytest-cov"
 ]
 
 [tool.uv]
