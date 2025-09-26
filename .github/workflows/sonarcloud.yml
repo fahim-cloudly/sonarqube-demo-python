@@ -13,29 +13,32 @@ on:
 
 jobs:
   build:
-    name: Build and Analyze
+    name: Build, Test & Analyze
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout code
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # 2️⃣ Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install pytest pytest-cov uv
-          # Install backend dependencies from pyproject.toml
+          pip install uv
           cd backend
           uv sync
           cd ..
 
-      - name: Run tests with coverage
+      # 4️⃣ Run tests with coverage
+      - name: Run backend tests
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/backend/app
           cd backend
@@ -43,6 +46,7 @@ jobs:
             --cov=app --cov-report=xml:coverage.xml
           cd ..
 
+      # 5️⃣ SonarCloud analysis
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
@@ -55,3 +59,4 @@ jobs:
             -Dsonar.python.coverage.reportPaths=backend/coverage.xml
             -Dsonar.sources=backend/app
             -Dsonar.tests=backend/app/tests
+            -Dsonar.exclusions=backend/app/tests/**
