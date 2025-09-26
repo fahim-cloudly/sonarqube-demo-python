@@ -1,0 +1,21 @@
+[project]
+name = "medical-chatbot-backend"
+version = "0.1.0"
+description = "LLM + RAGraph Medical Chatbot Backend"
+authors = [{name = "Your Name"}]
+requires-python = ">=3.9"
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "neo4j",
+    "pandas",
+    "numpy",
+    "sentence-transformers",
+    "streamlit",
+    "python-dotenv",
+    "pytest",
+]
+
+[tool.uv]
+# optional: configure caching, index settings here

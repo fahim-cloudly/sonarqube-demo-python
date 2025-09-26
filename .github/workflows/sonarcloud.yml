@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - main
+      - dev
 
 jobs:
   build:
@@ -27,12 +29,20 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install pytest pytest-cov
+          # Install backend dependencies if pyproject.toml exists
+          if [ -f backend/pyproject.toml ]; then
+            pip install uv
+            cd backend && uv sync && cd ..
+          fi
 
       - name: Run tests with coverage
         run: |
-          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
-          pytest --maxfail=1 --disable-warnings -q --cov=src --cov-report=xml
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/backend/app
+          cd backend
+          pytest --maxfail=1 --disable-warnings -q \
+            --cov=app --cov-report=xml
+          cd ..
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
@@ -43,6 +53,6 @@ jobs:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.sources=src
-            -Dsonar.tests=tests
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.sources=backend/app
+            -Dsonar.tests=backend/app/tests
