@@ -29,19 +29,18 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install pytest pytest-cov
-          # Install backend dependencies if pyproject.toml exists
-          if [ -f backend/pyproject.toml ]; then
-            pip install uv
-            cd backend && uv sync && cd ..
-          fi
+          pip install pytest pytest-cov uv
+          # Install backend dependencies from pyproject.toml
+          cd backend
+          uv sync
+          cd ..
 
       - name: Run tests with coverage
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/backend/app
           cd backend
-          pytest --maxfail=1 --disable-warnings -q \
-            --cov=app --cov-report=xml
+          uv run pytest --maxfail=1 --disable-warnings -q \
+            --cov=app --cov-report=xml:coverage.xml
           cd ..
 
       - name: SonarCloud Scan
