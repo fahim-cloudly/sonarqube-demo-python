@@ -111,10 +111,14 @@ curl -v -X POST \
 
 ```bash
 cd frontend
-uv run streamlit run app.py
+
+# To sync dependencies
+npm i
+
+npm run dev
 ```
 
-The frontend will be available at: [http://localhost:8501](http://localhost:8501)
+The frontend will be available at: [http://localhost:3000](http://localhost:3000)
 
 ## Features
 
@@ -147,7 +151,7 @@ uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 ```bash
 cd frontend
-uv run streamlit run app.py
+npm run dev
 ```
 
 ### Testing
