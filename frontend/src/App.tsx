@@ -4,6 +4,7 @@ import { ChatSidebar } from './components/ChatSidebar';
 import { ChatInterface } from './components/ChatInterface';
 import { NotificationPanel } from './components/NotificationPanel';
 import { ChatMessageData } from './components/ChatMessage';
+import { askQuestion } from './lib/api';
 
 // Mock data for demonstration
 const mockRecentChats = [
@@ -89,7 +90,13 @@ export default function App() {
 
   const unreadNotificationCount = notifications.filter(n => !n.isRead).length;
 
-  const generateMockResponse = (userMessage: string, userType: 'patient' | 'expert'): ChatMessageData => {
+  const generateMockResponse = async(userMessage: string, userType: 'patient' | 'expert'): Promise<ChatMessageData> => {
+ 
+
+    const llmResponseData=await askQuestion(userMessage);
+    // console.log("LLM Response Data from generateMockResponse:", llmResponseData);
+
+
     const isTrialQuery = userMessage.toLowerCase().includes('trial') || userMessage.toLowerCase().includes('clinical');
     const isResearchQuery = userMessage.toLowerCase().includes('research') || userMessage.toLowerCase().includes('study');
     
@@ -157,19 +164,21 @@ export default function App() {
     return {
       id: Date.now().toString(),
       type: 'bot',
-      content: responses[Math.floor(Math.random() * responses.length)],
+      // content: responses[Math.floor(Math.random() * responses.length)],
+      content: llmResponseData.answer,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       metadata: {
         confidence: Math.floor(Math.random() * 20) + 80,
         sources: [
-          { title: userType === 'expert' ? 'Clinical Guidelines' : 'Patient Education Resource', url: '#', type: 'guideline' as const },
-          { title: 'Medical Literature Review', url: '#', type: 'journal' as const }
-        ]
+          // { title: userType === 'expert' ? 'Clinical Guidelines' : 'Patient Education Resource', url: '#', type: 'guideline' as const },
+
+            ...llmResponseData.sources]
       }
     };
   };
 
   const handleSendMessage = async (message: string) => {
+  
     // Add user message
     const userMessage: ChatMessageData = {
       id: Date.now().toString(),
@@ -182,8 +191,8 @@ export default function App() {
     setIsLoading(true);
     
     // Simulate API delay
-    setTimeout(() => {
-      const botResponse = generateMockResponse(message, userType);
+    setTimeout(async() => {
+      const botResponse =await generateMockResponse(message, userType);
       setMessages(prev => [...prev, botResponse]);
       setIsLoading(false);
     }, 1500);
@@ -213,7 +222,7 @@ export default function App() {
         notificationCount={unreadNotificationCount}
       />
       
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-y-auto">
         <ChatSidebar
           selectedFilters={selectedFilters}
           onFilterChange={setSelectedFilters}
@@ -221,7 +230,7 @@ export default function App() {
           clinicalTrials={mockClinicalTrials}
         />
         
-        <div className="flex-1 flex">
+        <div className=" h-screen overflow-y-auto w-full ">
           <ChatInterface
             messages={messages}
             onSendMessage={handleSendMessage}

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { MarkdownMessage } from "./utils/MarkdownMessage";
 
 export interface ChatMessageData {
   id: string;
@@ -42,7 +43,7 @@ export function ChatMessage({ message, userType }: ChatMessageProps) {
   
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
-      <div className={`flex items-start space-x-3 max-w-2xl ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
+      <div className={`flex items-start mb-5  ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
         <Avatar className="h-8 w-8">
           <AvatarFallback className={isUser ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'}>
             {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
@@ -110,7 +111,7 @@ export function ChatMessage({ message, userType }: ChatMessageProps) {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <p className="text-sm">{message.content}</p>
+                  <p className="text-sm"><MarkdownMessage content={message.content} /></p>
                   
                   {message.metadata?.confidence && !isUser && (
                     <div className="flex items-center space-x-2">

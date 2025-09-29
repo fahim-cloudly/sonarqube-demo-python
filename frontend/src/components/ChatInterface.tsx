@@ -64,7 +64,7 @@ export function ChatInterface({
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col rounded-full ">
       {/* Messages Area */}
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-6">
         <div className="space-y-4">
@@ -153,7 +153,8 @@ export function ChatInterface({
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-t bg-white p-4">
+      <div className="fixed bottom-0 w-90 p-6  rounder-full">
+         <div className="border-t bg-white p-4  shadow-md">
         <div className="flex items-end space-x-2">
           <Button variant="ghost" size="sm" className="mb-2">
             <Paperclip className="h-4 w-4" />
@@ -189,6 +190,11 @@ export function ChatInterface({
           medical information with healthcare professionals.
         </p>
       </div>
+      </div>
+     
+
+
+
     </div>
   );
 }
