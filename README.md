@@ -5,15 +5,16 @@ A medical chatbot application using LLM + RAG (Retrieval Augmented Generation) w
 ## Architecture
 
 - **Backend**: FastAPI server with Neo4j graph database integration
-- **Frontend**: Streamlit web application with custom medical chatbot UI
+- **Frontend**: React application built with Vite and modern UI components
 - **LLM Integration**: Groq API for language model capabilities
 - **Embeddings**: Sentence transformers for vector similarity search
-- **Package Management**: UV for fast Python package management
+- **Package Management**: UV for Python dependencies, npm for frontend
+- **Code Quality**: SonarQube integration for code analysis
 
 ## Project Structure
 
 ```
-medical-chatbot/
+sonarqube-demo-python/
     backend/                # FastAPI backend application
         app/
             api/                # API routes
@@ -25,29 +26,38 @@ medical-chatbot/
             services/           # Business logic
             tests/              # Backend tests
             utils/              # Utility functions
-        Dockerfile
-        pyproject.toml
-        uv.lock
-    frontend/               # Streamlit frontend application
-        components/           # UI components
-        utils/                # Frontend utilities
-        app.py                # Main Streamlit app
-        pyproject.toml
-        uv.lock
+        pyproject.toml          # Python dependencies
+        build_graph.py          # Neo4j graph construction
+        ingest_data.py          # Data ingestion pipeline
+        train_embeddings.py     # Embedding training
     scripts/                # Data processing scripts
-        build_graph.py        # Neo4j graph construction
-        ingest_data.py        # Data ingestion pipeline
-        train_embeddings.py   # Embedding training
     data/                   # Data directory
-    docker-compose.yml      # Docker orchestration
-    .env                    # Environment variables
+        embeddings/             # Vector embeddings
+        graphs/                 # Graph data
+        processed/              # Processed datasets
+        raw/                    # Raw data files
+    .github/                # GitHub workflows
+        workflows/              # CI/CD pipelines
+    frontend/               # React frontend application
+        src/
+            components/         # React UI components
+            guidelines/         # Development guidelines
+            lib/                # Utility libraries
+            styles/             # CSS and styling
+        package.json            # Node.js dependencies
+    docker-compose.yml      # Docker orchestration (empty)
+    .env                    # Environment variables (empty)
+    sonar-project.properties # SonarQube configuration
+    .gitignore              # Git ignore rules
 ```
 
 ## Prerequisites
 
 - Python 3.9+
+- Node.js 18+
 - Neo4j database
-- UV package manager
+- UV package manager for Python
+- npm for frontend dependencies
 - Docker (optional)
 
 ## Installation
@@ -55,18 +65,19 @@ medical-chatbot/
 1. Clone the repository:
         ```bash
         git clone <repository-url>
-        cd medical-chatbot
+        cd sonarqube-demo-python
         ```
 
-2. Install dependencies using UV:
+2. Install backend dependencies using UV:
         ```bash
-        # Backend
         cd backend
         uv sync
+        ```
 
-        # Frontend
+3. Install frontend dependencies using npm:
+        ```bash
         cd ../frontend
-        uv sync
+        npm install
         ```
 
 ## Configuration
@@ -103,7 +114,7 @@ The backend API will be available at:
 Upload and ingest medical data:
 ```bash
 curl -v -X POST \
-    -F "file=@/home/fahim-bro/medical-chatbot/backend/app/data/Medicine_Details.csv" \
+    -F "file=@/path/to/your/medical/data.csv" \
     http://localhost:8000/api/admin/upload_and_ingest
 ```
 
@@ -111,25 +122,22 @@ curl -v -X POST \
 
 ```bash
 cd frontend
-
-# To sync dependencies
-npm i
-
 npm run dev
 ```
 
-The frontend will be available at: [http://localhost:3000](http://localhost:3000)
+The frontend will be available at: [http://localhost:5173](http://localhost:5173) (Vite default port)
 
 ## Features
 
-- Interactive medical chatbot interface built with Streamlit
+- Interactive medical chatbot interface built with React and modern UI components
 - RAG-based medical knowledge retrieval
 - Neo4j graph database for medical relationships
 - Vector similarity search using sentence transformers
 - FastAPI backend with automatic API documentation
-- Custom medical-themed UI
-- Fast dependency management with UV
+- Modern responsive UI with Radix UI components
+- Fast dependency management with UV for Python and npm for frontend
 - CSV data upload and ingestion via API
+- SonarQube integration for code quality analysis
 
 ## API Endpoints
 
@@ -159,6 +167,13 @@ npm run dev
 ```bash
 cd backend
 uv run pytest
+```
+
+### Code Quality Analysis
+
+Run SonarQube analysis (requires SonarQube server or SonarCloud setup):
+```bash
+sonar-scanner
 ```
 
 ## Data Format
